@@ -9,6 +9,7 @@ sealed class Token(val type: TokenType, val raw: Char) {
     object QuestionMark: Token(TokenType.QUESTION_MARK, '?')
     object Or: Token(TokenType.OR, '|')
     object Dot: Token(TokenType.DOT, '.')
+    object Backslash: Token(TokenType.BACKSLASH, '\\')
 }
 
 enum class TokenType {
@@ -19,7 +20,8 @@ enum class TokenType {
     PLUS,
     QUESTION_MARK,
     OR,
-    DOT
+    DOT,
+    BACKSLASH,
 }
 
 private val specialTokens = listOf(
@@ -29,7 +31,8 @@ private val specialTokens = listOf(
     Token.Plus,
     Token.QuestionMark,
     Token.Or,
-    Token.Dot)
+    Token.Dot,
+    Token.Backslash)
 
 private val charToSpecialToken: Map<Char, Token> = specialTokens.associateBy { it.raw }
 

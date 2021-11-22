@@ -90,7 +90,7 @@ private class StatefulParser(tokens: List<Token>) {
 
     private fun concatenation(): Regexp {
         val subexpressions: MutableList<Regexp> = mutableListOf()
-        while (nextMatches(TokenType.LEFT_ROUND_BRACKET, TokenType.DOT, TokenType.CHARACTER)) {
+        while (nextMatches(TokenType.LEFT_ROUND_BRACKET, TokenType.DOT, TokenType.CHARACTER, TokenType.BACKSLASH)) {
             subexpressions.add(unit())
         }
         if (subexpressions.isEmpty()) {
@@ -111,6 +111,7 @@ private class StatefulParser(tokens: List<Token>) {
             TokenType.CHARACTER -> Regexp.CharMatcher(Symbol.RawCharacter(next.raw))
             TokenType.DOT -> Regexp.CharMatcher(Symbol.Dot)
             TokenType.LEFT_ROUND_BRACKET -> group()
+            TokenType.BACKSLASH -> backslashCharacter()
             else -> throw RegexParsingException("Failed to parse $next!")
         }
     }
@@ -140,5 +141,13 @@ private class StatefulParser(tokens: List<Token>) {
         }
         skip()
         return Regexp.Group(subexpression)
+    }
+
+    private fun backslashCharacter(): Regexp {
+        if (!hasNext()) {
+            throw RegexParsingException("No character after a backslash!")
+        }
+
+        return Regexp.CharMatcher(Symbol.RawCharacter(getNext().raw))
     }
 }
