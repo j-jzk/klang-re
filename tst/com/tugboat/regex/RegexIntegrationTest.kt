@@ -127,6 +127,25 @@ class RegexIntegrationTest {
                 "helloa world"))
     }
 
+    @Test
+    fun testMatchesCharacterRange() {
+        testMatches(
+            "[asdf][asdf]* [^asdf]*",
+            listOf(
+                "asdf qwer",
+                "a ",
+                "s ",
+                "dfff ",
+                "fdsa qw"),
+            listOf(
+                "",
+                " ",
+                "g ",
+                "asxf ",
+                "asdf asdf",
+                "asdf xd"))
+    }
+
     private fun testMatches(pattern: String, expectedMatches: List<String>, expectedNonMatches: List<String>) {
         val compiled = compileRegex(pattern)
         expectedMatches.forEach { testMatch(compiled, it, true) }

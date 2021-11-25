@@ -80,8 +80,24 @@ private class StatefulParser(tokens: List<Token>) {
         return type
     }
 
+    private fun nextMatchesRaw(match: Char): Boolean {
+        if (!hasNext())
+            return false
+
+            val next = getNext()
+            rewind()
+            return next.raw == match
+    }
+
     private fun getNext(): Token {
         return tokensIt.next()
+    }
+
+    private fun nextOrThrow(msg: String): Token {
+        if (!hasNext())
+            throw RegexParsingException(msg)
+
+        return getNext()
     }
 
     private fun rewind() {
@@ -90,7 +106,7 @@ private class StatefulParser(tokens: List<Token>) {
 
     private fun concatenation(): Regexp {
         val subexpressions: MutableList<Regexp> = mutableListOf()
-        while (nextMatches(TokenType.LEFT_ROUND_BRACKET, TokenType.DOT, TokenType.CHARACTER, TokenType.BACKSLASH)) {
+        while (nextMatches(TokenType.LEFT_ROUND_BRACKET, TokenType.DOT, TokenType.CHARACTER, TokenType.BACKSLASH, TokenType.LEFT_SQUARE_BRACKET)) {
             subexpressions.add(unit())
         }
         if (subexpressions.isEmpty()) {
@@ -112,6 +128,7 @@ private class StatefulParser(tokens: List<Token>) {
             TokenType.DOT -> Regexp.CharMatcher(Symbol.Dot)
             TokenType.LEFT_ROUND_BRACKET -> group()
             TokenType.BACKSLASH -> backslashedCharacter()
+            TokenType.LEFT_SQUARE_BRACKET -> characterRange()
             else -> throw RegexParsingException("Failed to parse $next!")
         }
     }
@@ -141,6 +158,34 @@ private class StatefulParser(tokens: List<Token>) {
         }
         skip()
         return Regexp.Group(subexpression)
+    }
+
+    private fun characterRange(): Regexp {
+        return Regexp.CharMatcher(characterRangeDefinition())
+    }
+
+    private fun characterRangeDefinition(): Symbol {
+        val characters = mutableListOf<Char>()
+
+        val inverted = nextMatchesRaw('^')
+        if (inverted) skip()
+
+        while (hasNext() && !nextMatches(TokenType.RIGHT_SQUARE_BRACKET)) {
+            val next = getNext()
+            when (next.type) {
+                TokenType.BACKSLASH -> characters.add(nextOrThrow("No character after a backslash").raw)
+                else -> characters.add(next.raw)
+            }
+        }
+
+        if (!nextMatches(TokenType.RIGHT_SQUARE_BRACKET))
+            throw RegexParsingException("Unclosed character range")
+        skip()
+
+        return if (!inverted)
+            Symbol.AnyOf(characters)
+        else
+            Symbol.NoneOf(characters)
     }
 
     private fun backslashedCharacter(): Regexp {

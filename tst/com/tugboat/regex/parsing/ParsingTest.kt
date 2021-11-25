@@ -178,6 +178,46 @@ class ParsingTest {
     }
 
     @Test
+    fun testParseCharacterRange() {
+        testParse(
+            Regexp.CharMatcher(Symbol.AnyOf("abc")),
+            listOf(
+                Token.LeftSquareBracket,
+                Token.RawCharacter('a'),
+                Token.RawCharacter('b'),
+                Token.RawCharacter('c'),
+                Token.RightSquareBracket))
+    }
+
+    @Test
+    fun testParseInvertedCharacterRange() {
+        testParse(
+            Regexp.CharMatcher(Symbol.NoneOf("abc")),
+            listOf(
+                Token.LeftSquareBracket,
+                Token.RawCharacter('^'),
+                Token.RawCharacter('a'),
+                Token.RawCharacter('b'),
+                Token.RawCharacter('c'),
+                Token.RightSquareBracket))
+    }
+
+    @Test
+    fun testParseEscapedCharInCharacterRange() {
+        testParse(
+            Regexp.CharMatcher(Symbol.AnyOf("^]w")),
+            listOf(
+                Token.LeftSquareBracket,
+                Token.Backslash,
+                Token.RawCharacter('^'),
+                Token.Backslash,
+                Token.RightSquareBracket,
+                Token.Backslash,
+                Token.RawCharacter('w'),
+                Token.RightSquareBracket))
+    }
+
+    @Test
     fun testParseOrWithNothingOnEitherSide() {
         testFailedParse(listOf(Token.Or))
     }
@@ -230,6 +270,16 @@ class ParsingTest {
     @Test
     fun testParseBadCharacterAfterBackslash() {
         testFailedParse(listOf(Token.Backslash, Token.RawCharacter('a')))
+    }
+
+    @Test
+    fun testParseUnclosedCharacterRange() {
+        testFailedParse(listOf(Token.LeftSquareBracket))
+    }
+
+    @Test
+    fun testParseStrayBackslashInCharacterRange() {
+        testFailedParse(listOf(Token.LeftSquareBracket, Token.Backslash))
     }
 
     private fun testParse(expectedExpression: Regexp, tokens: List<Token>) {
