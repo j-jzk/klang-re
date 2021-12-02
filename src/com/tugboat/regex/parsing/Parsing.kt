@@ -161,20 +161,33 @@ private class StatefulParser(tokens: List<Token>) {
     }
 
     private fun characterRange(): Regexp {
-        return Regexp.CharMatcher(characterRangeDefinition())
+        val inverted = nextMatchesRaw('^')
+        if (inverted) skip()
+
+        val symbol = if (inverted)
+            Symbol.LogicalNot(characterRangeDefinition())
+        else
+            characterRangeDefinition()
+
+        return Regexp.CharMatcher(symbol)
     }
 
     private fun characterRangeDefinition(): Symbol {
         val characters = mutableListOf<Char>()
 
-        val inverted = nextMatchesRaw('^')
-        if (inverted) skip()
-
         while (hasNext() && !nextMatches(TokenType.RIGHT_SQUARE_BRACKET)) {
-            val next = getNext()
-            when (next.type) {
-                TokenType.BACKSLASH -> characters.add(nextOrThrow("No character after a backslash").raw)
-                else -> characters.add(next.raw)
+            val next = nonSpecialCharacter("-^]\\".toList()) ?: throw RegexParsingException("Unexpected special character in a character range")
+
+            if (nextMatchesRaw('-')) {  // comprehension
+                skip()
+                val end = nonSpecialCharacter("-^]\\".toList()) ?: throw RegexParsingException("Unexpected special character after a hyphen in a character range")
+
+                if (next > end)
+                    throw RegexParsingException("Bad comprehension in a character range (first character has larger ASCII value than the second one)")
+
+                characters += next .. end
+            } else {
+                characters += next
             }
         }
 
@@ -182,10 +195,7 @@ private class StatefulParser(tokens: List<Token>) {
             throw RegexParsingException("Unclosed character range")
         skip()
 
-        return if (!inverted)
-            Symbol.AnyOf(characters)
-        else
-            Symbol.NoneOf(characters)
+        return Symbol.AnyOf(characters)
     }
 
     private fun backslashedCharacter(): Regexp {
@@ -199,6 +209,26 @@ private class StatefulParser(tokens: List<Token>) {
             next in specialTokens -> Regexp.CharMatcher(Symbol.RawCharacter(next.raw))
             CharClasses.isSingleCharClass(next.raw) -> Regexp.CharMatcher(CharClasses.getSingleCharClass(next.raw)!!)
             else -> throw RegexParsingException("Invalid character after a backslash: \\${next.raw}")
+        }
+    }
+
+    /**
+     * A helper function which either returns a regular character (not in
+     * `specialChars`) or a backslash-escaped character from `specialChars`.
+     */
+    private fun nonSpecialCharacter(specialChars: Iterable<Char>): Char? {
+        val next = nextOrThrow("Unexpected end of input!")
+        when {
+            next.type == TokenType.BACKSLASH -> {
+                val escaped = nextOrThrow("No character after a backslash!")
+
+                if (escaped.raw in specialChars)
+                    return escaped.raw
+                else
+                    throw RegexParsingException("Invalid character after a backslash: \\${escaped.raw}")
+            }
+            next.raw in specialChars -> return null
+            else -> return next.raw
         }
     }
 }
