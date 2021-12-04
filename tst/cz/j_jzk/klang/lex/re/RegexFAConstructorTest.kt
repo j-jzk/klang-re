@@ -3,7 +3,7 @@ package cz.j_jzk.klang.lex.re
 import cz.j_jzk.klang.lex.re.fa.NFA
 import cz.j_jzk.klang.lex.re.fa.State
 import cz.j_jzk.klang.lex.re.fa.StateFactory
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class RegexFAConstructorTest {

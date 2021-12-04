@@ -2,7 +2,7 @@ package cz.j_jzk.klang.lex.re.parsing
 
 import cz.j_jzk.klang.lex.re.Regexp
 import cz.j_jzk.klang.lex.re.Symbol
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 

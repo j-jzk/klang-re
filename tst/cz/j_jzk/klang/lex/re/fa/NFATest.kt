@@ -1,7 +1,7 @@
 package cz.j_jzk.klang.lex.re.fa
 
 import cz.j_jzk.klang.lex.re.Symbol
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class NFATest {

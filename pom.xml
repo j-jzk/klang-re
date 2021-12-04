@@ -14,8 +14,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.2.30</kotlin.version>
-        <junit.version>4.11</junit.version>
+        <kotlin.version>1.6.0</kotlin.version>
+        <junit.version>5.7.2</junit.version>
+        <testplugin.version>2.22.2</testplugin.version>
     </properties>
 
     <dependencies>
@@ -31,15 +32,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>2.15.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -68,6 +63,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${testplugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${testplugin.version}</version>
             </plugin>
         </plugins>
     </build>
