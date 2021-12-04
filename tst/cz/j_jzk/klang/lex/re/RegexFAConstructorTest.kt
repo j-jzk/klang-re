@@ -1,8 +1,8 @@
-package com.tugboat.regex
+package cz.j_jzk.klang.lex.re
 
-import com.tugboat.regex.fa.NFA
-import com.tugboat.regex.fa.State
-import com.tugboat.regex.fa.StateFactory
+import cz.j_jzk.klang.lex.re.fa.NFA
+import cz.j_jzk.klang.lex.re.fa.State
+import cz.j_jzk.klang.lex.re.fa.StateFactory
 import org.junit.Test
 import kotlin.test.assertEquals
 

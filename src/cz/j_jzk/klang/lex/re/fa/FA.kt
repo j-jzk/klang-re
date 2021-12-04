@@ -1,4 +1,4 @@
-package com.tugboat.regex.fa
+package cz.j_jzk.klang.lex.re.fa
 
 interface FA {
 

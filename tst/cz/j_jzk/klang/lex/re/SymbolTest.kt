@@ -1,4 +1,4 @@
-package com.tugboat.regex
+package cz.j_jzk.klang.lex.re
 
 import org.junit.Test
 import kotlin.test.assertFalse

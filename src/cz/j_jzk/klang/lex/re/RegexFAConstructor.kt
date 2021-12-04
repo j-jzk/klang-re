@@ -1,10 +1,10 @@
-package com.tugboat.regex
+package cz.j_jzk.klang.lex.re
 
-import com.tugboat.regex.fa.FA
-import com.tugboat.regex.fa.NFA
-import com.tugboat.regex.fa.NFABuilder
-import com.tugboat.regex.fa.StateFactory
-import com.tugboat.regex.fa.State
+import cz.j_jzk.klang.lex.re.fa.FA
+import cz.j_jzk.klang.lex.re.fa.NFA
+import cz.j_jzk.klang.lex.re.fa.NFABuilder
+import cz.j_jzk.klang.lex.re.fa.StateFactory
+import cz.j_jzk.klang.lex.re.fa.State
 
 /**
  * Transforms a Regexp into an equivalent Finite Automaton. Is thread-safe.

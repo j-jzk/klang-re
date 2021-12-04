@@ -1,4 +1,4 @@
-package com.tugboat.regex
+package cz.j_jzk.klang.lex.re
 
 /**
  * The various types of expressions that make up regex.

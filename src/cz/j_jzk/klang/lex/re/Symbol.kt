@@ -1,4 +1,4 @@
-package com.tugboat.regex
+package cz.j_jzk.klang.lex.re
 
 /**
  * Represents a class of characters and can match on those characters.

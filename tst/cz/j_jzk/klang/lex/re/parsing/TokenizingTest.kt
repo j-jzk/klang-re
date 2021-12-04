@@ -1,4 +1,4 @@
-package com.tugboat.regex.parsing
+package cz.j_jzk.klang.lex.re.parsing
 
 import org.junit.Test
 import kotlin.test.assertEquals

@@ -1,5 +1,8 @@
+# klang-re
 ## About
-A simple regex implementation in Kotlin.
+A library used internally in [klang](https://github.com/j-jzk/klang), the toolkit for defining lexers and parsers for programming languages (to be created).
+
+It is based on [Kotlex](https://github.com/Kevinpgalligan/Kotlex/) by Kevin Galligan.
 
 ```
 > val compiledRegex = compileRegex("h*(ello)* world|(here (be|are) dragons)")

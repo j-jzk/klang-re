@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) 2018 KPG
+Kotlex copyright (c) 2018 KPG
+klang-re copyright (c) 2021 j-jzk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

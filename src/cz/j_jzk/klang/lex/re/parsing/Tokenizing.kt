@@ -1,4 +1,4 @@
-package com.tugboat.regex.parsing
+package cz.j_jzk.klang.lex.re.parsing
 
 sealed class Token(val type: TokenType, val raw: Char) {
     data class RawCharacter(private val char: Char): Token(TokenType.CHARACTER, char)

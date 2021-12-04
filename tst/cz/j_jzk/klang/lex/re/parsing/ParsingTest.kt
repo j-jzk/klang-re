@@ -1,7 +1,7 @@
-package com.tugboat.regex.parsing
+package cz.j_jzk.klang.lex.re.parsing
 
-import com.tugboat.regex.Regexp
-import com.tugboat.regex.Symbol
+import cz.j_jzk.klang.lex.re.Regexp
+import cz.j_jzk.klang.lex.re.Symbol
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

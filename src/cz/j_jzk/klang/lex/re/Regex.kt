@@ -1,9 +1,9 @@
-package com.tugboat.regex
+package cz.j_jzk.klang.lex.re
 
-import com.tugboat.regex.fa.FA
-import com.tugboat.regex.fa.StateFactory
-import com.tugboat.regex.parsing.parse
-import com.tugboat.regex.parsing.tokenize
+import cz.j_jzk.klang.lex.re.fa.FA
+import cz.j_jzk.klang.lex.re.fa.StateFactory
+import cz.j_jzk.klang.lex.re.parsing.parse
+import cz.j_jzk.klang.lex.re.parsing.tokenize
 
 // This is thread-safe, so it's okay to use a static instance. Although,
 // it does make unit testing impossible.

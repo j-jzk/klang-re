@@ -4,13 +4,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.tugboat.regex</groupId>
-    <artifactId>tugboat-regex</artifactId>
-    <version>1.0</version>
+    <groupId>cz.j_jzk.klang</groupId>
+    <artifactId>klang-re</artifactId>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
-    <name>KotlinRegex</name>
-    <url>http://maven.apache.org</url>
+    <name>klang-re</name>
+    <url>https://github.com/j-jzk/klang-re</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

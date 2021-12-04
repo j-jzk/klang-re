@@ -1,6 +1,6 @@
-package com.tugboat.regex.fa
+package cz.j_jzk.klang.lex.re.fa
 
-import com.tugboat.regex.Symbol
+import cz.j_jzk.klang.lex.re.Symbol
 import org.junit.Test
 import kotlin.test.assertEquals
 
