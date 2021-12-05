@@ -11,7 +11,7 @@ import cz.j_jzk.klang.lex.re.fa.State
  */
 class RegexFAConstructor(private val stateFactory: StateFactory) {
 
-    fun constructFrom(expression: Regexp): FA {
+    fun constructFrom(expression: Regexp): NFA {
         // Use Thompson's Construction, which allows us to build an NFA piece-by-piece from
         // subexpressions of the Regexp.
         val startState = stateFactory.create(false)
