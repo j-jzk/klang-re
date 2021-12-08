@@ -1,5 +1,6 @@
 package cz.j_jzk.klang.lex.re
 
+import cz.j_jzk.klang.lex.re.fa.NFA
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -43,4 +44,6 @@ class MultipleMatcherTest {
 			matchStart("fghkjfklj", listOf(aPlus, xPlus))
 		)
 	}
+
+	private fun matchStart(string: String, regexes: List<NFA>) = MultipleMatcher(regexes).matchStart(string)
 }
