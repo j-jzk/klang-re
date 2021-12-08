@@ -45,5 +45,24 @@ class MultipleMatcherTest {
 		)
 	}
 
-	private fun matchStart(string: String, regexes: List<NFA>) = MultipleMatcher(regexes).matchStart(string)
+	@Test
+	fun testRewindsInputCorrectly() {
+		val iterator = "asdf".toList().listIterator()
+		val matcher = MultipleMatcher(
+			listOf(
+				compileRegex("a").fa,
+				compileRegex("s").fa
+			),
+			iterator
+		)
+
+		matcher.nextMatch() // should match the 'a'
+		assertEquals('s', iterator.next())
+		iterator.previous()
+
+		matcher.nextMatch() // should match the 's'
+		assertEquals('d', iterator.next())
+	}
+
+	private fun matchStart(string: String, regexes: List<NFA>) = MultipleMatcher(regexes, string.toList().listIterator()).nextMatch()
 }

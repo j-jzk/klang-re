@@ -8,16 +8,21 @@ import cz.j_jzk.klang.lex.re.fa.State
  *    - will have to think through whether this would actually save time, because
  *      everything is passed by reference anyways and map access is O(1), so looking
  *      up the regexes by an ID could just decrease performance
- *  - better separation of concerns
  *  - return just the longest match to save memory - ???
  *    - we would have to explicitly account for the cases where multiple matches
  *      are the longest, which may cost more processing time than what we would save
- *  - make MultipleMatcher consume some sort of stream insted of strings
- *  - javadoc
  */
 
-class MultipleMatcher(val regexes: List<NFA>) {
-	fun matchStart(input: String): Map<NFA, Int> {
+/**
+ * A class for matching multiple regexes against the start of an input.
+ */
+class MultipleMatcher(val regexes: List<NFA>, val input: ListIterator<Char>) {
+
+	/**
+	 * Returns the next match and rewinds the input to the end of the longest match.
+	 * Returns a map of regexes and the length of the longest match they produce.
+	 */
+	fun nextMatch(): Map<NFA, Int> {
 		val matchesInProgress = mutableMapOf<NFA, MutableSet<State>>()
 		val matched = mutableMapOf<NFA, Int>()
 
@@ -26,7 +31,8 @@ class MultipleMatcher(val regexes: List<NFA>) {
 			matchesInProgress[re] = mutableSetOf(re.startState)
 		}
 
-		for ((i, c) in input.withIndex()) {
+		var i = 0
+		for (c in input) {
 			val toRemove = mutableListOf<NFA>()
 
 			for ((re, states) in matchesInProgress) {
@@ -47,8 +53,19 @@ class MultipleMatcher(val regexes: List<NFA>) {
 
 			if (matchesInProgress.isEmpty())
 				break
+
+			i++
 		}
 	
+		// rewind the input to the end of the longest match
+		// rewind(matched.values.maxByOrNull { matchLen -> i - matchLen } ?: 0)
+		rewind(i - (matched.values.maxOrNull() ?: 0))
 		return matched
+	}
+
+	/** Rewinds the input by n characters */
+	private fun rewind(n: Int) {
+		for (i in 0..n)
+			input.previous()
 	}
 }
