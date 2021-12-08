@@ -7,8 +7,8 @@ import kotlin.test.assertEquals
 class MultipleMatcherTest {
 	private val aPlus = compileRegex("a+").fa
 	private val xPlus = compileRegex("x+").fa
-	private val plus = compileRegex("\\+").fa
-	private val plusPlus = compileRegex("\\++").fa
+	private val aPlusX = compileRegex("a+x").fa
+	private val dot = compileRegex(".").fa
 
 	@Test
 	fun testWholeStringMatch() {
@@ -30,10 +30,10 @@ class MultipleMatcherTest {
 	fun testMultipleMatches() {
 		assertEquals(
 			mapOf(
-				plus to 1,
-				plusPlus to 2
+				dot to 1,
+				aPlus to 2
 			),
-			matchStart("++-", listOf(plus, plusPlus))
+			matchStart("aaz", listOf(dot, aPlus))
 		)
 	}
 
@@ -42,6 +42,21 @@ class MultipleMatcherTest {
 		assertEquals(
 			mapOf(),
 			matchStart("fghkjfklj", listOf(aPlus, xPlus))
+		)
+	}
+
+	@Test
+	// test if the matcher is not too greedy - if it doesn't return false matches
+	fun testNotTooGreedy() {
+		assertEquals(
+			mapOf(dot to 1),
+			matchStart("aaaaz", listOf(aPlusX, dot))
+		)
+
+		// to be safe
+		assertEquals(
+			matchStart("aaaaz", listOf(aPlusX, dot)),
+			matchStart("aaaaz", listOf(dot, aPlusX))
 		)
 	}
 
@@ -62,6 +77,16 @@ class MultipleMatcherTest {
 
 		matcher.nextMatch() // should match the 's'
 		assertEquals('d', iterator.next())
+	}
+
+	@Test
+	fun testRewindsInputCorrectlyOnNoMatch() {
+		val iterator = "aa".toList().listIterator()
+		val matcher = MultipleMatcher(listOf(xPlus, aPlusX), iterator)
+
+		matcher.nextMatch()
+		assertEquals('a', iterator.next())
+		assertEquals('a', iterator.next())
 	}
 
 	private fun matchStart(string: String, regexes: List<NFA>) = MultipleMatcher(regexes, string.toList().listIterator()).nextMatch()

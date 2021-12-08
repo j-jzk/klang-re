@@ -31,8 +31,9 @@ class MultipleMatcher(val regexes: List<NFA>, val input: ListIterator<Char>) {
 			matchesInProgress[re] = mutableSetOf(re.startState)
 		}
 
-		var i = 0
+		var charsConsumed = 0
 		for (c in input) {
+			charsConsumed++
 			val toRemove = mutableListOf<NFA>()
 
 			for ((re, states) in matchesInProgress) {
@@ -41,7 +42,7 @@ class MultipleMatcher(val regexes: List<NFA>, val input: ListIterator<Char>) {
 
 				re.expandWithEpsilonTransitions(nextStates)
 				if (nextStates.any { it.isAccepting })
-					matched[re] = i + 1
+					matched[re] = charsConsumed
 
 				// if the regex couldn't match the character, mark it for removal
 				if (nextStates.isEmpty())
@@ -53,19 +54,16 @@ class MultipleMatcher(val regexes: List<NFA>, val input: ListIterator<Char>) {
 
 			if (matchesInProgress.isEmpty())
 				break
-
-			i++
 		}
 	
 		// rewind the input to the end of the longest match
-		// rewind(matched.values.maxByOrNull { matchLen -> i - matchLen } ?: 0)
-		rewind(i - (matched.values.maxOrNull() ?: 0))
+		rewind(charsConsumed - (matched.values.maxOrNull() ?: 0))
 		return matched
 	}
 
 	/** Rewinds the input by n characters */
 	private fun rewind(n: Int) {
-		for (i in 0..n)
+		for (i in 1..n)
 			input.previous()
 	}
 }
