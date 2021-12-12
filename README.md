@@ -1,6 +1,6 @@
 # klang-re
 ## About
-A library used internally in [klang](https://github.com/j-jzk/klang), the toolkit for defining lexers and parsers for programming languages (to be created).
+A library used internally in [klang](https://github.com/j-jzk/klang), the toolkit for defining lexers and parsers for programming languages.
 
 It is based on [Kotlex](https://github.com/Kevinpgalligan/Kotlex/) by Kevin Galligan.
 
