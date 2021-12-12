@@ -1,6 +1,6 @@
 package cz.j_jzk.klang.lex.re
 
-import cz.j_jzk.klang.lex.re.fa.FA
+import cz.j_jzk.klang.lex.re.fa.NFA
 import cz.j_jzk.klang.lex.re.fa.StateFactory
 import cz.j_jzk.klang.lex.re.parsing.parse
 import cz.j_jzk.klang.lex.re.parsing.tokenize
@@ -15,7 +15,7 @@ fun compileRegex(string: String): CompiledRegex {
     return CompiledRegex(faConstructor.constructFrom(expression))
 }
 
-class CompiledRegex (private val fa: FA) {
+class CompiledRegex (val fa: NFA) {
 
     fun matches(string: String): Boolean {
         return fa.matches(string)

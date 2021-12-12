@@ -4,7 +4,7 @@ import cz.j_jzk.klang.lex.re.Symbol
 import java.util.ArrayDeque
 
 data class NFA(
-        private val startState: State,
+        val startState: State,
         private val transitionsByState: Map<State, Set<Pair<Symbol, State>>>,
         private val epsilonTransitions: Map<State, Set<State>>) : FA {
 
@@ -25,7 +25,12 @@ data class NFA(
         return currentStates.any { it.isAccepting }
     }
 
-    private fun expandWithEpsilonTransitions(states: MutableSet<State>) {
+    fun getStates(states: MutableSet<State>, c: Char): MutableSet<State> {
+        expandWithEpsilonTransitions(states)
+        return nextStates(states, c)
+    }
+
+    fun expandWithEpsilonTransitions(states: MutableSet<State>) {
         val unexpandedStates = ArrayDeque<State>()
         unexpandedStates.addAll(states)
         while (unexpandedStates.isNotEmpty()) {
