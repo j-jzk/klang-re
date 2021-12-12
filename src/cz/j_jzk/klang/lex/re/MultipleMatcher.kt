@@ -16,7 +16,7 @@ import cz.j_jzk.klang.lex.re.fa.State
 /**
  * A class for matching multiple regexes against the start of an input.
  */
-class MultipleMatcher(val regexes: List<NFA>) {
+class MultipleMatcher(val regexes: Collection<NFA>) {
 
 	/**
 	 * Returns the next match and rewinds the input to the end of the longest match.
