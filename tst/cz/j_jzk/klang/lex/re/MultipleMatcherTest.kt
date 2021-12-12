@@ -67,27 +67,26 @@ class MultipleMatcherTest {
 			listOf(
 				compileRegex("a").fa,
 				compileRegex("s").fa
-			),
-			iterator
+			)
 		)
 
-		matcher.nextMatch() // should match the 'a'
+		matcher.nextMatch(iterator) // should match the 'a'
 		assertEquals('s', iterator.next())
 		iterator.previous()
 
-		matcher.nextMatch() // should match the 's'
+		matcher.nextMatch(iterator) // should match the 's'
 		assertEquals('d', iterator.next())
 	}
 
 	@Test
 	fun testRewindsInputCorrectlyOnNoMatch() {
 		val iterator = "aa".toList().listIterator()
-		val matcher = MultipleMatcher(listOf(xPlus, aPlusX), iterator)
+		val matcher = MultipleMatcher(listOf(xPlus, aPlusX))
 
-		matcher.nextMatch()
+		matcher.nextMatch(iterator)
 		assertEquals('a', iterator.next())
 		assertEquals('a', iterator.next())
 	}
 
-	private fun matchStart(string: String, regexes: List<NFA>) = MultipleMatcher(regexes, string.toList().listIterator()).nextMatch()
+	private fun matchStart(string: String, regexes: List<NFA>) = MultipleMatcher(regexes).nextMatch(string.toList().listIterator())
 }

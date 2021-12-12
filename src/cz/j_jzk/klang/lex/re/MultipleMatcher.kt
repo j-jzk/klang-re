@@ -16,13 +16,13 @@ import cz.j_jzk.klang.lex.re.fa.State
 /**
  * A class for matching multiple regexes against the start of an input.
  */
-class MultipleMatcher(val regexes: List<NFA>, val input: ListIterator<Char>) {
+class MultipleMatcher(val regexes: List<NFA>) {
 
 	/**
 	 * Returns the next match and rewinds the input to the end of the longest match.
 	 * Returns a map of regexes and the length of the longest match they produce.
 	 */
-	fun nextMatch(): Map<NFA, Int> {
+	fun nextMatch(input: ListIterator<Char>): Map<NFA, Int> {
 		val matchesInProgress = mutableMapOf<NFA, MutableSet<State>>()
 		val matched = mutableMapOf<NFA, Int>()
 
@@ -57,12 +57,12 @@ class MultipleMatcher(val regexes: List<NFA>, val input: ListIterator<Char>) {
 		}
 	
 		// rewind the input to the end of the longest match
-		rewind(charsConsumed - (matched.values.maxOrNull() ?: 0))
+		rewind(input, charsConsumed - (matched.values.maxOrNull() ?: 0))
 		return matched
 	}
 
 	/** Rewinds the input by n characters */
-	private fun rewind(n: Int) {
+	private fun rewind(input: ListIterator<Char>, n: Int) {
 		for (i in 1..n)
 			input.previous()
 	}
