@@ -1,29 +1,41 @@
 # klang-re
+## Quick reference
+klang-re currently supports the following regular expression syntax:
+
+**Expression** |  **Meaning**
+--- | ---
+`a\|b` | `a` or `b`
+`(a)` | `a`
+`a*` | `a` 0 or more times
+`a+` | `a` 1 or more times
+`a?` | `a` 0 or 1 time
+`.` | any character
+`[xy0-9]` | `x`, `y`, or any digit
+`[^xy0-9]` | anything except the listed characters
+`\w`, `\d`, ... |  any character from the predefined character class
+
+### Character classes
+**Character class** | **Meaning**
+--- | ---
+`\s` | whitespace
+`\S` | not whitespace
+`\d` | a digit
+`\D` | not a digit
+`\w` | a "word character" (`[a-zA-Z0-9_]`)
+`\W` | not a word character
+`\x` | a hexadecimal digit
+`\O` | an octal digit
+
 ## About
 A library used internally in [klang](https://github.com/j-jzk/klang), the toolkit for defining lexers and parsers for programming languages.
 
 It is based on [Kotlex](https://github.com/Kevinpgalligan/Kotlex/) by Kevin Galligan.
 
-```
-> val compiledRegex = compileRegex("h*(ello)* world|(here (be|are) dragons)")
-> compiledRegex.matches("here be dragons")
-true
-> compiledRegex.matches("bello dorld")
-false
-```
+## Technical Information
+### How to Build
+The project is built using the Maven build system. Clone the repository, then run `./mvnw package` from the top-level directory, or `./mvnw install` to install this package into the Maven local repository.
 
-Currently supports the following parts of regex: `*`, `+`, `?`, `()`, `.`, `|`. There is a wrapper around this that allows true/false text-matching. The matches are all-or-nothing.
-
-## How to Build
-The project is built using the Maven build system. Install Maven, clone the repository, then run `mvn package` from the top-level directory. That's it.
-
-## How it works
-1. Tokenizes the regex string.
-2. Parses the tokens into a syntax tree.
-3. From the syntax tree, builds a Nondeterministic Finite Automaton (using Thompson's Construction) that can be used to match strings.
-
-Here's the grammar:
-
+### Formal grammar
 ```
 REGEXP                  -> OR | epsilon
 
@@ -49,14 +61,6 @@ CHARACTER_RANGE_DEFINITION -> RANGE_NON_SPECIAL_CHARACTER
 RANGE_NON_SPECIAL_CHARACTER -> "a" | "b" | ... | "\" RANGE_SPECIAL_CHARACTER
 RANGE_SPECIAL_CHARACTER -> "^" | "]" | "-" | "\"
 ```
-
-Notes on the grammar:
-* It's unambiguous (this is a requirement).
-* It avoids left-recursion (i.e. where a non-terminal decomposes into
-a string where that same non-terminal is the left-most symbol). Left-recursion
-can be problematic for parsers.
-* The precedence goes, from highest to lowest: 'modifiers', 'concatenation', 'or'.
-* 'Or' is left-associative.
 
 ## License
 MIT.
