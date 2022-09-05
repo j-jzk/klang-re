@@ -1,6 +1,7 @@
 package cz.j_jzk.klang.lex.re
 
 import cz.j_jzk.klang.lex.re.fa.NFA
+import cz.j_jzk.klang.lex.re.nextMatchFromMultiple
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -63,30 +64,28 @@ class MultipleMatcherTest {
 	@Test
 	fun testRewindsInputCorrectly() {
 		val iterator = "asdf".toList().listIterator()
-		val matcher = MultipleMatcher(
-			listOf(
-				compileRegex("a").fa,
-				compileRegex("s").fa
-			)
+		val regexes = listOf(
+			compileRegex("a").fa,
+			compileRegex("s").fa
 		)
 
-		matcher.nextMatch(iterator) // should match the 'a'
+		nextMatchFromMultiple(regexes, iterator) // should match the 'a'
 		assertEquals('s', iterator.next())
 		iterator.previous()
 
-		matcher.nextMatch(iterator) // should match the 's'
+		nextMatchFromMultiple(regexes, iterator) // should match the 's'
 		assertEquals('d', iterator.next())
 	}
 
 	@Test
 	fun testRewindsInputCorrectlyOnNoMatch() {
 		val iterator = "aa".toList().listIterator()
-		val matcher = MultipleMatcher(listOf(xPlus, aPlusX))
+		val regexes = listOf(xPlus, aPlusX)
 
-		matcher.nextMatch(iterator)
+		nextMatchFromMultiple(regexes, iterator)
 		assertEquals('a', iterator.next())
 		assertEquals('a', iterator.next())
 	}
 
-	private fun matchStart(string: String, regexes: List<NFA>) = MultipleMatcher(regexes).nextMatch(string.toList().listIterator())
+	private fun matchStart(string: String, regexes: List<NFA>) = nextMatchFromMultiple(regexes, string.toList().listIterator())
 }

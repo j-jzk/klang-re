@@ -14,56 +14,51 @@ import cz.j_jzk.klang.lex.re.fa.State
  */
 
 /**
- * A class for matching multiple regexes against the start of an input.
+ * Matches the given regexes against the input.
+ * Returns the next match and rewinds the input to the end of the longest match.
+ * Returns a map of regexes and the length of the longest match they produce.
  */
-class MultipleMatcher(val regexes: Collection<NFA>) {
+fun nextMatchFromMultiple(regexes: Collection<NFA>, input: ListIterator<Char>): Map<NFA, Int> {
+	val matchesInProgress = mutableMapOf<NFA, MutableSet<State>>()
+	val matched = mutableMapOf<NFA, Int>()
 
-	/**
-	 * Returns the next match and rewinds the input to the end of the longest match.
-	 * Returns a map of regexes and the length of the longest match they produce.
-	 */
-	fun nextMatch(input: ListIterator<Char>): Map<NFA, Int> {
-		val matchesInProgress = mutableMapOf<NFA, MutableSet<State>>()
-		val matched = mutableMapOf<NFA, Int>()
-
-		// initialize
-		for (re in regexes) {
-			matchesInProgress[re] = mutableSetOf(re.startState)
-		}
-
-		var charsConsumed = 0
-		for (c in input) {
-			charsConsumed++
-			val toRemove = mutableListOf<NFA>()
-
-			for ((re, states) in matchesInProgress) {
-				val nextStates = re.getStates(states, c)
-				matchesInProgress[re] = nextStates
-
-				re.expandWithEpsilonTransitions(nextStates)
-				if (nextStates.any { it.isAccepting })
-					matched[re] = charsConsumed
-
-				// if the regex couldn't match the character, mark it for removal
-				if (nextStates.isEmpty())
-					toRemove += re
-			}
-
-			for (re in toRemove)
-				matchesInProgress.remove(re)
-
-			if (matchesInProgress.isEmpty())
-				break
-		}
-	
-		// rewind the input to the end of the longest match
-		rewind(input, charsConsumed - (matched.values.maxOrNull() ?: 0))
-		return matched
+	// initialize
+	for (re in regexes) {
+		matchesInProgress[re] = mutableSetOf(re.startState)
 	}
 
-	/** Rewinds the input by n characters */
-	private fun rewind(input: ListIterator<Char>, n: Int) {
-		for (i in 1..n)
-			input.previous()
+	var charsConsumed = 0
+	for (c in input) {
+		charsConsumed++
+		val toRemove = mutableListOf<NFA>()
+
+		for ((re, states) in matchesInProgress) {
+			val nextStates = re.getStates(states, c)
+			matchesInProgress[re] = nextStates
+
+			re.expandWithEpsilonTransitions(nextStates)
+			if (nextStates.any { it.isAccepting })
+				matched[re] = charsConsumed
+
+			// if the regex couldn't match the character, mark it for removal
+			if (nextStates.isEmpty())
+				toRemove += re
+		}
+
+		for (re in toRemove)
+			matchesInProgress.remove(re)
+
+		if (matchesInProgress.isEmpty())
+			break
 	}
+
+	// rewind the input to the end of the longest match
+	rewind(input, charsConsumed - (matched.values.maxOrNull() ?: 0))
+	return matched
+}
+
+/** Rewinds the input by n characters */
+private fun rewind(input: ListIterator<Char>, n: Int) {
+	for (i in 1..n)
+		input.previous()
 }
