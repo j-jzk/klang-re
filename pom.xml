@@ -6,7 +6,7 @@
 
     <groupId>cz.j_jzk.klang</groupId>
     <artifactId>klang-re</artifactId>
-    <version>1.1.1-dev1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>klang-re</name>

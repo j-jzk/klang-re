@@ -12,12 +12,20 @@ private val faConstructor = RegexFAConstructor(StateFactory())
 fun compileRegex(string: String): CompiledRegex {
     val tokens = tokenize(string)
     val expression = parse(tokens)
-    return CompiledRegex(faConstructor.constructFrom(expression))
+    return CompiledRegex(faConstructor.constructFrom(expression), string)
 }
 
-class CompiledRegex (val fa: NFA) {
-
+class CompiledRegex (val fa: NFA, val originalRegex: String) {
     fun matches(string: String): Boolean {
         return fa.matches(string)
     }
+
+    override fun equals(other: Any?): Boolean =
+        if (other is CompiledRegex)
+            other.originalRegex == this.originalRegex
+        else
+            false
+
+    override fun toString() = "CompiledRegex(/$originalRegex/)"
+    override fun hashCode() = originalRegex.hashCode()
 }
